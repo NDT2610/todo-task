@@ -72,7 +72,7 @@ const handleDragEnd = (event) => {
 }
 
   return (
-    <AppStyled className="App" theme={theme}>
+    <AppStyled grid = {toggleGrid} theme={theme}>
       <form action = "" className = "form" onSubmit={handleSubmit}>
       <h1>ToDo Task</h1>  
         <div className="input-container">
@@ -90,7 +90,7 @@ const handleDragEnd = (event) => {
               <p>
                 Priority
               </p>
-              <div className="togle-grid">
+              <div className="toggle-grid">
                 <button onClick={gridHandler}>
                   {
                     toggleGrid ? grid : list
@@ -101,18 +101,21 @@ const handleDragEnd = (event) => {
                 High
               </p>
             </div>
-            {
+            <div className="todos">
+              {
           todos.map((todo) => {
             const {id, name, completed} =todo
             return <List 
             key={id} 
             name={name} 
-            id = {id} 
+            id = {id}
+            grid = {toggleGrid} 
             completed={completed}  
             removeTodo={removeTodo}
               />
             })
-          }
+          }</div>
+            
         <div className="low-priority">
               <p>
                 Low
@@ -184,7 +187,7 @@ overflow: hidden;
         border: none;
         background: ${(props) => props.theme.colorPrimaryGreen};
         height: 100%;
-        padding: 0 1rem;
+        padding: 0rem 1rem;
         border-top-right-radius: 7px;
         border-bottom-right-radius: 7px;
         color: ${(props) => props.theme.colorWhite};
