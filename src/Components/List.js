@@ -5,7 +5,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 const check = <i className="fa-solid fa-circle-check"></i>
-function List({name, completed , id, removeTodo}) {
+function List({name, completed , id, removeTodo, handleCompleted}) {
 
 
 const theme = useThemeContext()   
@@ -46,14 +46,14 @@ const randomizeColor = () => {
 }
 
   return (
-    <ListStyled theme={theme} colors={randomizeColor} style={style} {...attributes} {...listeners} ref={setNodeRef}> 
+    <ListStyled theme={theme} completed={completed} colors={randomizeColor} style={style} {...attributes} {...listeners} ref={setNodeRef}> 
         <div>
         <li onDoubleClick={()=> removeTodo(id)}>
             <p>
                 {name}
             </p>
         </li>
-        <div className="complete-btn">
+        <div className="complete-btn" onDoubleClick={()=> handleCompleted(id) } >
                 {check}
         </div>
     </div>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { myTodos } from "./data/todos"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import List from "./Components/List" ;
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
@@ -17,6 +17,30 @@ function App() {
   const [toggleGrid, setToggleGrid] = useState(false)
 
   const theme = useThemeContext()
+
+  const saveToLocalStorage = (todos) => {
+    if(todos){
+      localStorage.setItem("todos", JSON.stringify(todos))
+    }
+  }
+
+  const removeItemFromLocalStorage = (id) => {
+    const filtered = todos.filter((todo)=>{
+      return todo.id !== id
+    })
+    localStorage.setItem("todos",JSON.stringify(filtered));
+  }
+
+  useEffect(() =>{
+    const localTodos = localStorage.getItem("todos")
+    if(localTodos){
+      setTodos(JSON.parse(localTodos))
+    }
+    const localGrid = localStorage.getItem("toggleGrid")
+    if(localGrid){
+      setToggleGrid(JSON.parse(localGrid))
+    }
+  }, [])
 
   const handleChange = (e) => {
     setValue(e.target.value)
@@ -38,10 +62,13 @@ const handleSubmit = (e) => {
 
   setTodos(newTodos)
   
+  saveToLocalStorage(newTodos)
+
   setValue('')
 }
 
 const removeTodo = (id) => {
+  removeItemFromLocalStorage(id);
   const filtered = todos.filter((todo) => {
     return todo.id !== id
   })
@@ -49,8 +76,20 @@ const removeTodo = (id) => {
   setTodos(filtered)
 }
 
+const handleCompleted = (id) => {
+  const newTodos = todos.map((todo) =>{
+    if(todo.id === id ){
+      todo.completed = !todo.completed
+    }
+    return todo;
+  })
+  setTodos(newTodos);
+  saveToLocalStorage(newTodos);
+}
+
 const gridHandler = () => {
   setToggleGrid(!toggleGrid)
+  localStorage.setItem("toggleGrid", JSON.stringify(!toggleGrid))
 }
 
 const handleDragEnd = (event) => {
@@ -64,15 +103,20 @@ const handleDragEnd = (event) => {
       const newItems = [...items]
 
       newItems.splice(oldIndex, 1)
+
       newItems.splice(newIndex, 0 ,items[oldIndex] )
+
+      saveToLocalStorage(newItems);
 
       return newItems
     })
   }
 }
 
+
+
   return (
-    <AppStyled className="App" theme={theme}>
+    <AppStyled grid={toggleGrid} theme={theme}>
       <form action = "" className = "form" onSubmit={handleSubmit}>
       <h1>ToDo Task</h1>  
         <div className="input-container">
@@ -90,7 +134,7 @@ const handleDragEnd = (event) => {
               <p>
                 Priority
               </p>
-              <div className="togle-grid">
+              <div className="toggle-grid">
                 <button onClick={gridHandler}>
                   {
                     toggleGrid ? grid : list
@@ -101,6 +145,7 @@ const handleDragEnd = (event) => {
                 High
               </p>
             </div>
+            <div className="todos">
             {
           todos.map((todo) => {
             const {id, name, completed} =todo
@@ -110,9 +155,12 @@ const handleDragEnd = (event) => {
             id = {id} 
             completed={completed}  
             removeTodo={removeTodo}
+            handleCompleted = {handleCompleted}
               />
             })
           }
+            </div>
+
         <div className="low-priority">
               <p>
                 Low
@@ -208,7 +256,7 @@ overflow: hidden;
       grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
       grid-column-gap: 1rem;
       transition: all .3s ease;
-      grid-row-gap: ${(props) => props.grid ? '0' : '1rem'};
+      grid-row-gap: ${(props) => props.grid ? '1rem' : '0'};
     }
     .priority-con{
       display: flex;
