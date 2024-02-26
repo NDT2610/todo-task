@@ -135,7 +135,6 @@ const handleDragEnd = (event) => {
                 Priority
               </p>
               <div className="toggle-grid">
-              <div className="toggle-grid">
                 <button onClick={gridHandler}>
                   {
                     toggleGrid ? grid : list
