@@ -135,6 +135,7 @@ const handleDragEnd = (event) => {
                 Priority
               </p>
               <div className="toggle-grid">
+              <div className="toggle-grid">
                 <button onClick={gridHandler}>
                   {
                     toggleGrid ? grid : list
@@ -152,7 +153,8 @@ const handleDragEnd = (event) => {
             return <List 
             key={id} 
             name={name} 
-            id = {id} 
+            id = {id}
+            grid = {toggleGrid} 
             completed={completed}  
             removeTodo={removeTodo}
             handleCompleted = {handleCompleted}
@@ -232,7 +234,7 @@ overflow: hidden;
         border: none;
         background: ${(props) => props.theme.colorPrimaryGreen};
         height: 100%;
-        padding: 0 1rem;
+        padding: 0rem 1rem;
         border-top-right-radius: 7px;
         border-bottom-right-radius: 7px;
         color: ${(props) => props.theme.colorWhite};
